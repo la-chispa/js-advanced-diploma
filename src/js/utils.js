@@ -1,6 +1,5 @@
 export function calcTileType(index, boardSize) {
   // TODO: write logic here
-  // return 'center';
   if (index === 0) {
     return 'top-left';
   }
