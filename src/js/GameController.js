@@ -1,4 +1,9 @@
 import themes from './themes';
+import { generateTeam } from './generators';
+import Bowman from './Bowman';
+import Swordsman from './Swordsman';
+import Vampire from './Vampire';
+import Undead from './Undead';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -7,11 +12,13 @@ export default class GameController {
   }
 
   init() {
-    const field = this.gamePlay.drawUi(themes.prairie);
-    document.addEventListener('DOMContentLoaded', field);
-    // this.gamePlay.drawUi(themes.prairie);
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
+    this.gamePlay.drawUi(themes.prairie);
+    const userCharacters = [Bowman, Swordsman];
+    const aiCharacters = [Vampire, Undead];
+    const team = generateTeam(userCharacters, 1, 2).concat(generateTeam(aiCharacters, 1, 2));
+    this.gamePlay.redrawPositions(team);
   }
 
   onCellClick(index) {
