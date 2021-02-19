@@ -30,7 +30,7 @@ function generatePosition(allowedTypes) {
 
 export function generateTeam(allowedTypes, maxLevel, characterCount) {
   // TODO: write logic here
-  const team = [];
+  const characters = [];
   const positions = new Set();
   for (let i = 0; positions.size < characterCount; i += 1) {
     positions.add(generatePosition(allowedTypes));
@@ -38,7 +38,11 @@ export function generateTeam(allowedTypes, maxLevel, characterCount) {
   for (const position of positions) {
     const character = characterGenerator(allowedTypes, maxLevel).next().value;
     const positionedCharacter = new PositionedCharacter(character, position);
-    team.push(positionedCharacter);
+    characters.push(positionedCharacter);
   }
-  return team;
+  for (const character of characters) {
+    character.active = false;
+    character.player = (allowedTypes.includes(Bowman || Swordsman || Magician)) ? 'user' : 'ai';
+  }
+  return characters;
 }
