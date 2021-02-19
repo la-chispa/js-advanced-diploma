@@ -19,18 +19,30 @@ export default class GameController {
     // TODO: add event listeners to gamePlay events
     // TODO: load saved stated from stateService
     this.gamePlay.drawUi(themes.prairie);
-    // this.gamePlay.userCharacters = [Bowman, Swordsman, Magician];
-    // this.gamePlay.aiCharacters = [Vampire, Undead, Daemon];
-    // this.gamePlay.team = generateTeam(userChars, 1, 2).concat(generateTeam(aiChars, 1, 2));
-    // this.setTeam();
     this.gamePlay.redrawPositions(this.setTeam());
+    this.gamePlay.team.activePlayer = 'user';
     this.gamePlay.addCellEnterListener(this.onCellEnter);
-    // this.gamePlay.addCellLeaveListener(this.onCellLeave);
-    // this.gamePlay.addCellClickListener(this.onCellClick);
+    this.gamePlay.addCellLeaveListener(this.onCellLeave);
+    this.gamePlay.addCellClickListener(this.onCellClick);
+    // console.log(this);
   }
 
   onCellClick(index) {
     // TODO: react to click
+    if (this.team.activePlayer === 'user') {
+      const position = this.team.characters.find((i) => i.position === index && i.player === 'user');
+      const selectedCellIndex = this.cells.findIndex((i) => i.classList.contains('selected'));
+      if (selectedCellIndex !== -1) {
+        this.deselectCell(selectedCellIndex);
+      }
+      if (position) {
+        this.team.characters.forEach((i) => this.deselectCell(i.position));
+        this.selectCell(index);
+      }
+      if (selectedCellIndex === -1 && !position) {
+        GamePlay.showError('There is no your character in this cell');
+      }
+    }
   }
 
   onCellEnter(index) {
