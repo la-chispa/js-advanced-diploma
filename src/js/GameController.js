@@ -1,4 +1,5 @@
 import themes from './themes';
+import cursors from './cursors';
 import { generateTeam } from './generators';
 import Bowman from './Bowman';
 import Swordsman from './Swordsman';
@@ -31,15 +32,15 @@ export default class GameController {
     // TODO: react to click
     if (this.team.activePlayer === 'user') {
       const position = this.team.characters.find((i) => i.position === index && i.player === 'user');
-      const selectedCellIndex = this.cells.findIndex((i) => i.classList.contains('selected'));
-      if (selectedCellIndex !== -1) {
-        this.deselectCell(selectedCellIndex);
+      const selectedCharIndex = this.cells.findIndex((i) => i.classList.contains('selected'));
+      if (selectedCharIndex !== -1) {
+        this.deselectCell(selectedCharIndex);
       }
       if (position) {
         this.team.characters.forEach((i) => this.deselectCell(i.position));
         this.selectCell(index);
       }
-      if (selectedCellIndex === -1 && !position) {
+      if (selectedCharIndex === -1 && !position) {
         GamePlay.showError('There is no your character in this cell');
       }
     }
@@ -47,17 +48,28 @@ export default class GameController {
 
   onCellEnter(index) {
     // TODO: react to mouse enter
-    const position = this.team.characters.find((i) => i.position === index);
+    const position = this.team.characters.find((i) => i.position === index && i.player === 'user');
+    const selectedCharIndex = this.cells.findIndex((i) => i.classList.contains('selected'));
     if (position) {
       const message = `\u{1F396}${position.character.level} \u{2694}${position.character.attack} \u{1F6E1}${position.character.defence} \u{2764}${position.character.health}`;
       this.showCellTooltip(message, index);
+    }
+    if (this.team.activePlayer === 'user') {
+      if (selectedCharIndex !== -1 && position) {
+        this.setCursor(cursors.pointer);
+      }
     }
   }
 
   onCellLeave(index) {
     // TODO: react to mouse leave
+    const position = this.team.characters.find((i) => i.position === index && i.player === 'user');
+    const selectedCharIndex = this.cells.findIndex((i) => i.classList.contains('selected'));
     if (this.team.characters.find((i) => i.position === index)) {
       this.hideCellTooltip(index);
+    }
+    if (selectedCharIndex !== -1 && position) {
+      this.setCursor(cursors.auto);
     }
   }
 
