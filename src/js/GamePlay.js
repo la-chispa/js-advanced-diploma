@@ -1,4 +1,4 @@
-import { calcHealthLevel, calcTileType } from './utils';
+import { calcHealthLevel, calcTileType, calcCoords } from './utils';
 
 export default class GamePlay {
   constructor() {
@@ -205,6 +205,7 @@ export default class GamePlay {
   }
 
   showDamage(index, damage) {
+    // debugger;
     return new Promise((resolve) => {
       const cell = this.cells[index];
       const damageEl = document.createElement('span');
@@ -228,4 +229,155 @@ export default class GamePlay {
       throw new Error('GamePlay not bind to DOM');
     }
   }
+
+  // Расчёт допустимых ходов персонажа
+  setCharMoves(character) {
+    const charcoord = this.coords[character.position];
+    const moves = [];
+    for (let i = 1; i <= character.character.move; i += 1) {
+      const calc = calcCoords(charcoord, i);
+      // const calc = [
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y,
+      //   },
+      //   {
+      //     x: charcoord.x,
+      //     y: charcoord.y + i,
+      //   },
+      //   {
+      //     x: charcoord.x,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y + i,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y + i,
+      //   },
+      // ];
+      const setMove = (coords) => {
+        if (coords.x > 7 || coords.x < 0 || coords.y > 7 || coords.y < 0) {
+          return;
+        }
+        const gameMove = this.coords.findIndex((n) => n.x === coords.x && n.y === coords.y);
+        moves.push(gameMove);
+      };
+      calc.forEach((o) => setMove(o));
+    }
+    return moves;
+  }
+
+  setCharAttacks(character) {
+    const charcoord = this.coords[character.position];
+    const attacks = [];
+    for (let i = 1; i <= character.character.range; i += 1) {
+      const calc = calcCoords(charcoord, i);
+      // const calc = [
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y,
+      //   },
+      //   {
+      //     x: charcoord.x,
+      //     y: charcoord.y + i,
+      //   },
+      //   {
+      //     x: charcoord.x,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y + i,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x + i,
+      //     y: charcoord.y - i,
+      //   },
+      //   {
+      //     x: charcoord.x - i,
+      //     y: charcoord.y + i,
+      //   },
+      // ];
+      const setAttack = (coords) => {
+        if (coords.x > 7 || coords.x < 0 || coords.y > 7 || coords.y < 0) {
+          return;
+        }
+        const charAttack = this.coords.findIndex((n) => n.x === coords.x && n.y === coords.y);
+        attacks.push(charAttack);
+      };
+      calc.forEach((o) => setAttack(o));
+    }
+    return attacks;
+  }
+
+  // ai() {
+  //   // debugger;
+  //   const aiTeam = [];
+  //   this.team.characters.forEach((i) => {
+  //     if (i.player === 'ai') {
+  //       aiTeam.push(i);
+  //     }
+  //   });
+  //   console.log(aiTeam);
+  //   const active = aiTeam[Math.floor(Math.random() * (aiTeam.length - 0)) + 0];
+  //   console.log(active);
+  //   this.selectCell(active.position);
+  //   this.team.charMoves = this.setCharMoves(active);
+  //   this.team.charAttacks = this.setCharAttacks(active);
+  //   console.log(this.team.charMoves);
+  //   console.log(this.team.charAttacks);
+  //   // const targets = [];
+  //   // this.team.characters.forEach((i) => {
+  //   //   if (this.team.charAttacks.includes(i.position) && i.player === 'user') {
+  //   //     targets.push(i);
+  //   //   }
+  //   // });
+  //   const target = this.team.characters.find((i) => this.team.charAttacks.includes(i.position) && i.player === 'user');
+  //   // console.log(target);
+  //   if (target) {
+  //     console.log(target.position);
+  //     const damage = Math.max(active.character.attack - target.character.defence, active.character.attack * 0.1);
+  //     this.showDamage(target.position, damage).then();
+  //     target.character.health -= damage;
+  //     if (target.character.health <= 0) {
+  //       this.team.characters.splice(this.team.characters.indexOf(target), 1);
+  //     }
+  //     this.deselectCell(active.position);
+  //     this.redrawPositions(this.team.characters);
+  //     this.team.activePlayer = 'user';
+  //   } else {
+  //     const move = this.team.charMoves[Math.floor(Math.random() * (this.team.charMoves.length - 1)) + 1];
+  //     // console.log(move);
+  //     this.deselectCell(active.position);
+  //     active.position = move;
+  //     this.redrawPositions(this.team.characters);
+  //     this.team.activePlayer = 'user';
+  //   }
+  //   // const target = this.team.characters.find((i) => i.position )
+
+  //   // Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+  // }
 }

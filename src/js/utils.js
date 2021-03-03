@@ -38,3 +38,40 @@ export function calcHealthLevel(health) {
 
   return 'high';
 }
+
+export function calcCoords(charcoord, i) {
+  return [
+    {
+      x: charcoord.x + i,
+      y: charcoord.y,
+    },
+    {
+      x: charcoord.x - i,
+      y: charcoord.y,
+    },
+    {
+      x: charcoord.x,
+      y: charcoord.y + i,
+    },
+    {
+      x: charcoord.x,
+      y: charcoord.y - i,
+    },
+    {
+      x: charcoord.x + i,
+      y: charcoord.y + i,
+    },
+    {
+      x: charcoord.x - i,
+      y: charcoord.y - i,
+    },
+    {
+      x: charcoord.x + i,
+      y: charcoord.y - i,
+    },
+    {
+      x: charcoord.x - i,
+      y: charcoord.y + i,
+    },
+  ];
+}
